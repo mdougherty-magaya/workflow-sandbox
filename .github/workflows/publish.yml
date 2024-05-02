@@ -16,7 +16,7 @@ jobs:
         uses: actions/setup-dotnet@v3
         
       - name: Install workloads
-        run: dotnet workload install maui-android
+        run: dotnet workload install maui-android maui-ios
       
       - name: Restore Packages
         run: dotnet restore
