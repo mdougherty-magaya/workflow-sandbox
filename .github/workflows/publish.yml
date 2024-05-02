@@ -1,5 +1,4 @@
 name: .NET publish
-#
 on:
   push:
     branches:
@@ -14,20 +13,27 @@ jobs:
 
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v3
+        with:
+          source-url: https://nuget.pkg.github.com/magaya-dev/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.PUBLISH_TOKEN}}
         
-      - name: Install workloads
-        run: dotnet workload install maui-android maui-ios
+#      - name: Install workloads
+#        run: dotnet workload install maui-android maui-ios
       
       - name: Restore Packages
         run: dotnet restore
+
 #      - name: Build Sandbox app
 #        run: dotnet build --configuration Release --no-restore
+      - name: Build
+        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
 
-      - name: Set package version v2
-        run: |
-          echo "PackageVersionV2=2.0.0-alpha.${GITHUB_RUN_NUMBER}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
-
-      - name: Show environment
-        env:
-          PACKAGE_VERSION: 2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}
-        run: env
+#      - name: Set package version v2
+#        run: |
+#          echo "PackageVersionV2=2.0.0-alpha.${GITHUB_RUN_NUMBER}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
+#
+#      - name: Show environment
+#        env:
+#          PACKAGE_VERSION: 2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}
+#        run: env
