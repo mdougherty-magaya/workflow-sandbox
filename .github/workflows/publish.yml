@@ -24,8 +24,7 @@ jobs:
 #      - name: Build Sandbox app
 #        run: dotnet build --configuration Release --no-restore
 
-      - name: Set package version
-        run: echo "::set-env name=PACKAGE_VERSION::2.0.0-alpha.$GITHUB_RUN_NUMBER+${GITHUB_SHA:0:8}"
-
       - name: Show environment
+        env:
+          PACKAGE_VERSION: "2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}"
         run: env
