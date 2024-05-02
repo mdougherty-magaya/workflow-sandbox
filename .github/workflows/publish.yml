@@ -20,11 +20,14 @@ jobs:
       
       - name: Restore Packages
         run: dotnet restore
-          
 #      - name: Build Sandbox app
 #        run: dotnet build --configuration Release --no-restore
 
+      - name: Set package version v2
+        run: |
+          echo "PackageVersionV2=2.0.0-alpha.${GITHUB_RUN_NUMBER}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
+
       - name: Show environment
         env:
-          PACKAGE_VERSION: "2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}"
+          PACKAGE_VERSION: 2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}
         run: env
