@@ -14,6 +14,9 @@ jobs:
 
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v3
+        
+      - name: Install workloads
+        run: dotnet workload install maui-android
       
       - name: Restore Packages
         run: dotnet restore
