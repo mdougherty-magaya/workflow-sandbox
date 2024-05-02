@@ -1,0 +1,25 @@
+name: .NET publish
+#
+on:
+  push:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v3
+      
+      - name: Restore Packages
+        run: dotnet restore
+          
+      - name: Build Sandbox app
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Show environment
+        run: env
