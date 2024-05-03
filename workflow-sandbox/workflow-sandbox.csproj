@@ -35,8 +35,8 @@
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
-        <PackageVersion Condition=" '$(VERSION)' == '' ">1.0.2</PackageVersion>
-        <PackageVersion Condition=" '$(VERSION)' != '' ">$(PACKAGE_VERSION)</PackageVersion>
+        <PackageVersion Condition=" '$(PACKAGE_VERSION)' == '' ">1.0.2</PackageVersion>
+        <PackageVersion Condition=" '$(PACKAGE_VERSION)' != '' ">$(PACKAGE_VERSION)</PackageVersion>
         <Version>$(PACKAGE_VERSION)</Version>
         
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
