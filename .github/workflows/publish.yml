@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - "*"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -17,6 +18,24 @@ jobs:
           source-url: https://nuget.pkg.github.com/mdougherty-magaya/index.json
         env:
           NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        
+      - name: Cache .NET files
+        id: cache-dotnet
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-dotnet
+        with:
+          path: ~/.dotnet
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/workflow-sandbox.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: dotnet workload list
         
       - name: Install workloads
         run: dotnet workload install maui-android maui-ios
