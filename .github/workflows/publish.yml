@@ -24,10 +24,10 @@ jobs:
       - name: Restore Packages
         run: dotnet restore
 
-#      - name: Set package version v2
-#        run: |
-#          echo "PackageVersionV2=2.0.0-alpha.${GITHUB_RUN_NUMBER}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
-#
+      - name: Set package version v1
+        run: |
+          echo "PACKAGE_VERSION=1.0.${GITHUB_RUN_NUMBER}-preview-${GITHUB_REF_NAME}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
+
 #      - name: Show environment
 #        env:
 #          PACKAGE_VERSION: 2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}
