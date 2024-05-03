@@ -47,7 +47,6 @@ jobs:
         run: |
           echo "ref=${{ github.ref_name }}"
           echo "default_branch=${{ github.event.repository.default_branch }}"
-          echo "default-branch.macro=${{default-branch}}"
 
         if : ${{ github.ref_name != github.event.repository.default_branch }}
       - name: Not default branch
