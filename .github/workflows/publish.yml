@@ -44,8 +44,9 @@ jobs:
         run: dotnet restore
 
       - name: Set package version v1
+        if : ${{ github.event.ref_name == github.event.repository.default_branch }}
         run: |
-          echo "PACKAGE_VERSION=1.0.${GITHUB_RUN_NUMBER}-pre-$(echo $GITHUB_REF_NAME | tr '[:upper:]' '[:lower:]')+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=alpha-${GITHUB_RUN_NUMBER}+$(echo $GITHUB_REF_NAME | tr '[:upper:]' '[:lower:]')-$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore

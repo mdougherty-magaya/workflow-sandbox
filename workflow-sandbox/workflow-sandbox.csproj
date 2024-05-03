@@ -35,8 +35,9 @@
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
-        <PackageVersion Condition=" '$(PACKAGE_VERSION)' == '' ">1.0.2</PackageVersion>
-        <PackageVersion Condition=" '$(PACKAGE_VERSION)' != '' ">$(PACKAGE_VERSION)</PackageVersion>
+        <PackageVersion>1.0.3</PackageVersion>
+        <!-- When the ${VERSION_POSTFIX} exists, this is likely a pre-release that requires dynamic versioning -->
+        <PackageVersion Condition=" '$(VERSION_POSTFIX)' != '' ">$(PackageVersion)-$(VERSION_POSTFIX)</PackageVersion>
         <Version>$(PACKAGE_VERSION)</Version>
         
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
