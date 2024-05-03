@@ -24,9 +24,6 @@ jobs:
       - name: Restore Packages
         run: dotnet restore
 
-      - name: Build
-        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
-
 #      - name: Set package version v2
 #        run: |
 #          echo "PackageVersionV2=2.0.0-alpha.${GITHUB_RUN_NUMBER}+$(echo $GITHUB_SHA | cut -c1-8)" >> "$GITHUB_ENV"
@@ -35,3 +32,9 @@ jobs:
 #        env:
 #          PACKAGE_VERSION: 2.0.0-alpha.${GITHUB_RUN_NUMBER}+${GITHUB_SHA:0:8}
 #        run: env
+      
+      - name: Build
+        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
+
+      - name: Push generated package to GitHub registry
+        run: dotnet nuget push ./bin/Release/*.nupkg --api-key ${{secrets.GITHUB_TOKEN}} --skip-duplicate --no-symbols
