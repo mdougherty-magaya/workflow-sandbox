@@ -45,16 +45,16 @@ jobs:
         
       - name: Show condition values
         run: |
-          echo "ref=${{ github.ref }}"
+          echo "ref=${{ github.ref_name }}"
           echo "default_branch=${{ github.event.repository.default_branch }}"
-          echo "default-branch.macro=$default-branch"
+          echo "default-branch.macro=${{default-branch}}"
 
-        if : ${{ github.ref != github.event.repository.default_branch }}
+        if : ${{ github.ref_name != github.event.repository.default_branch }}
       - name: Not default branch
         run: |
           echo "Not default branch"
           
-        if : ${{ github.ref == github.event.repository.default_branch }}
+        if : ${{ github.ref_name == github.event.repository.default_branch }}
       - name: Default branch
         run: |
           echo "Default branch"
