@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
+      
       - name: Setup .NET Core @ Latest
         uses: actions/setup-dotnet@v3
         with:
@@ -37,4 +37,7 @@ jobs:
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
 
       - name: Deploy generated package to GitHub registry
-        run: dotnet nuget push ./workflow-sandbox/bin/Release/workflow-sandbox*.nupkg --api-key ${{secrets.PUBLISH_TOKEN}} --skip-duplicate --no-symbols
+        run: dotnet nuget push ./workflow-sandbox/bin/Release/workflow-sandbox*.nupkg
+        
+      - name: Show environment
+        run: env
