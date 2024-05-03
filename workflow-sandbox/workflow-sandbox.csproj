@@ -21,16 +21,23 @@
         <SingleProject>true</SingleProject>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
+        <PackOnBuild>true</PackOnBuild>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        
         <!-- Display name -->
         <ApplicationTitle>workflow-sandbox</ApplicationTitle>
 
         <!-- App Identifier -->
         <ApplicationId>com.magaya.mdougherty.workflowsandbox</ApplicationId>
+        <PackageDescription>Sandbox Maui app for experimenting with GitHub Actions and Workflows</PackageDescription>
 
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
+        <PackageVersion Condition=" '$(VERSION)' == '' ">1.0.1</PackageVersion>
+        <PackageVersion Condition=" '$(VERSION)' != '' ">$(PACKAGE_VERSION)</PackageVersion>
+        <Version>$(PACKAGE_VERSION)</Version>
         
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
