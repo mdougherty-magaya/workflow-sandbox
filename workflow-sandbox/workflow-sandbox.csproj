@@ -38,7 +38,7 @@
         <PackageVersion>1.0.3</PackageVersion>
         <!-- When the ${VERSION_POSTFIX} exists, this is likely a pre-release that requires dynamic versioning -->
         <PackageVersion Condition=" '$(VERSION_POSTFIX)' != '' ">$(PackageVersion)-$(VERSION_POSTFIX)</PackageVersion>
-        <Version>$(PACKAGE_VERSION)</Version>
+        <Version>$(PackageVersion)</Version>
         
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>
