@@ -49,7 +49,7 @@ jobs:
         
       - name: Show condition values
         run: |
-          echo "pull_request.number=${{ github.pull_request.number }}
+          echo "pull_request.number=${{ github.pull_request.number }}"
           echo "ref=${{ github.ref_name }}"
           echo "default_branch=${{ github.event.repository.default_branch }}"
           echo "isNotDefault=${{ github.ref_name != github.event.repository.default_branch }}"
