@@ -56,9 +56,9 @@ jobs:
 
       - name: Set package version suffix
         env:
-          PR_NUMBER: ${{ github.event.number }}        
+          PR_NUMBER: ${{ github.pull_request.number }}        
         run: |
-          echo "VERSION_POSTFIX=-rc.${PR_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-rc.${PR_NUMBER:-0}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
