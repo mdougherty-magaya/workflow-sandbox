@@ -31,3 +31,8 @@ jobs:
           echo "pull_request.number=${{ github.pull_request.number }}"
           echo "ref=${{ github.ref_name }}"
           echo "context=$GITHUB_CONTEXT"
+
+      - name: Show environment
+        env:
+          EVENT_NUMBER: ${{ github.event.number }}
+        run: env
