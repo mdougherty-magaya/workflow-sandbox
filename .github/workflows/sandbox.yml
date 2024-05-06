@@ -24,8 +24,10 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Show condition values
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
         run: |
           echo "github.event_name=${{ github.event_name }}"
           echo "pull_request.number=${{ github.pull_request.number }}"
           echo "ref=${{ github.ref_name }}"
-          echo "event=${{ fromJSON(github.event) }}"
+          echo "context=$GITHUB_CONTEXT"
