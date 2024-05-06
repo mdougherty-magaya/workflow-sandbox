@@ -28,3 +28,4 @@ jobs:
           echo "github.event_name=${{ github.event_name }}"
           echo "pull_request.number=${{ github.pull_request.number }}"
           echo "ref=${{ github.ref_name }}"
+          echo "event=${{ fromJSON(github.event) }}"
