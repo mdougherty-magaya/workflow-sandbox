@@ -8,6 +8,9 @@ on:
 
 jobs:
   build:
+    # This job should not run on pull request event types since when there is a pull request
+    # the packages will be considered release candidates (i.e. {version}-rc.{#}) and 
+    # not alpha packages.
     if: github.event_name != 'pull_request'
     runs-on: macos-latest    
     steps:
