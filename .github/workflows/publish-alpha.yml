@@ -8,6 +8,7 @@ on:
 
 jobs:
   build:
+#    if: github.event_name != 'pull_request'
     runs-on: macos-latest    
     steps:
       - name: Checkout repository
@@ -46,6 +47,7 @@ jobs:
         
       - name: Show condition values
         run: |
+          echo "event_name=${{ github.event_name }}"
           echo "ref=${{ github.ref_name }}"
           echo "default_branch=${{ github.event.repository.default_branch }}"
           echo "isNotDefault=${{ github.ref_name != github.event.repository.default_branch }}"

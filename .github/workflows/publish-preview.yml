@@ -6,8 +6,7 @@ on:
       - reopened
       - synchronize
     branches:
-      - '**'
-      - '!main'
+      - $default-branch
   workflow_dispatch:
 
 jobs:
@@ -50,6 +49,7 @@ jobs:
         
       - name: Show condition values
         run: |
+          echo "pull_request.number=${{ github.pull_request.number }}"
           echo "ref=${{ github.ref_name }}"
           echo "default_branch=${{ github.event.repository.default_branch }}"
           echo "isNotDefault=${{ github.ref_name != github.event.repository.default_branch }}"
@@ -57,9 +57,9 @@ jobs:
 
       - name: Set package version suffix
         env:
-          PR_NUMBER: ${{ github.event.number }}        
+          PR_NUMBER: ${{ github.pull_request.number }}        
         run: |
-          echo "VERSION_POSTFIX=-rc.${PR_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-rc.0.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
