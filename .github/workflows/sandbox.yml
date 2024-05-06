@@ -11,6 +11,9 @@ on:
     types: [opened, reopened, synchronize, edited, closed, labeled, unlabeled, assigned, 
             unassigned, review_requested, review_request_removed, ready_for_review, locked, 
             unlocked]
+    branches:
+      - $default-branch
+      
   workflow_dispatch:
 
 jobs:
