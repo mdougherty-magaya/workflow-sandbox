@@ -1,4 +1,4 @@
-name: .NET publish preview package
+name: .NET publish release candidate package
 on:
   pull_request:
     types:
@@ -59,7 +59,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.number }}        
         run: |
-          echo "VERSION_POSTFIX=-preview.${PR_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-rc.${PR_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
