@@ -1,9 +1,9 @@
 name: .NET publish
 on:
-  release:
-    types: [published]
+  push:
     branches:
-      - 'main'
+      - '**'
+      - '!main'
   workflow_dispatch:
 
 jobs:
@@ -51,8 +51,25 @@ jobs:
           echo "isNotDefault=${{ github.ref_name != github.event.repository.default_branch }}"
           echo "isDefault=${{ github.ref_name == github.event.repository.default_branch }}"
 
+      - name: Not default branch
+        if : github.ref_name != github.event.repository.default_branch
+        run: |
+          echo "Not default branch"
+          
+      - name: Default branch
+        if : github.ref_name == github.event.repository.default_branch
+        run: |
+          echo "Default branch"
+        
+      - name: Set package version suffix
+        run: |
+          echo "VERSION_POSTFIX=-alpha${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
 
       - name: Deploy generated package to GitHub registry
         run: dotnet nuget push ./workflow-sandbox/bin/Release/workflow-sandbox*.nupkg --api-key ${{secrets.PUBLISH_TOKEN}} --skip-duplicate --no-symbols
+        
+      - name: Show environment
+        run: env
