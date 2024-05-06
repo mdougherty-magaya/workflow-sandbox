@@ -35,7 +35,7 @@
         <!-- Versions -->
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
-        <PackageVersion>1.0.4</PackageVersion>
+        <PackageVersion>1.0.5</PackageVersion>
         <!-- When the ${VERSION_POSTFIX} exists, this is likely a pre-release that requires dynamic versioning -->
         <PackageVersion Condition=" '$(VERSION_POSTFIX)' != '' ">$(PackageVersion)$(VERSION_POSTFIX)</PackageVersion>
         <Version>$(PackageVersion)</Version>
