@@ -1,4 +1,4 @@
-name: .NET publish
+name: .NET publish release package
 on:
   release:
     types: [published]

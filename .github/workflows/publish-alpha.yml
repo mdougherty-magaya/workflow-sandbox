@@ -1,4 +1,4 @@
-name: .NET publish
+name: .NET publish alpha package
 on:
   push:
     branches:

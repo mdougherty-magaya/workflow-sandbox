@@ -1,4 +1,4 @@
-name: .NET publish
+name: .NET publish preview package
 on:
   pull_request:
     types:
