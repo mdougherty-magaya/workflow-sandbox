@@ -63,7 +63,7 @@ jobs:
         
       - name: Set package version suffix
         run: |
-          echo "VERSION_POSTFIX=-alpha${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-alpha.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
