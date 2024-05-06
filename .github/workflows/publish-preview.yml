@@ -58,7 +58,7 @@ jobs:
         env:
           EVENT_NUMBER: ${{ github.event.number }}        
         run: |
-          echo "VERSION_POSTFIX=-rc.0.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-rc.${EVENT_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
 
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
@@ -67,4 +67,6 @@ jobs:
         run: dotnet nuget push ./workflow-sandbox/bin/Release/workflow-sandbox*.nupkg --api-key ${{secrets.PUBLISH_TOKEN}} --skip-duplicate --no-symbols
         
       - name: Show environment
+        env:
+          EVENT_NUMBER: ${{ github.event.number }}
         run: env
