@@ -6,8 +6,7 @@ on:
       - reopened
       - synchronize
     branches:
-      - '**'
-      - '!main'
+      - $default-branch
   workflow_dispatch:
 
 jobs:
