@@ -37,7 +37,7 @@
         <ApplicationVersion>1</ApplicationVersion>
         <PackageVersion>1.0.4</PackageVersion>
         <!-- When the ${VERSION_POSTFIX} exists, this is likely a pre-release that requires dynamic versioning -->
-        <PackageVersion Condition=" '$(VERSION_POSTFIX)' != '' ">$(PackageVersion)-$(VERSION_POSTFIX)</PackageVersion>
+        <PackageVersion Condition=" '$(VERSION_POSTFIX)' != '' ">$(PackageVersion)$(VERSION_POSTFIX)</PackageVersion>
         <Version>$(PackageVersion)</Version>
         
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
