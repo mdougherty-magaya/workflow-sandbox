@@ -1,9 +1,5 @@
 name: .NET publish alpha package
 on:
-  push:
-    branches:
-      - '**'
-      - '!main'
   workflow_dispatch:
 
 jobs:

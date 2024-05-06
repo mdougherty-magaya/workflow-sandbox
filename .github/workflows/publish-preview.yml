@@ -55,6 +55,7 @@ jobs:
           echo "default_branch=${{ github.event.repository.default_branch }}"
 
       - name: Set package version suffix
+        if: github.event_name == 'pull_request'
         env:
           EVENT_NUMBER: ${{ github.event.number }}        
         run: |
