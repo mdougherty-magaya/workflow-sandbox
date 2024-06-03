@@ -43,6 +43,7 @@ jobs:
         run: |
           ls -la
           git --version
+          git fetch --tags
           git log --format=oneline
           git show-ref --tags
           git tag -l
