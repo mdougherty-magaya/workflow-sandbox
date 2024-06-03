@@ -1,5 +1,9 @@
 on:
   workflow_call:
+    outputs:
+      builder_number: 
+        description: "The builder number"
+        value: ${{ jobs.main.outputs.builder_number }}
     
 jobs:
   main:
@@ -29,4 +33,5 @@ jobs:
           LAST_VERSION=$(git tag -l | sort -u | tail -1)
           echo "SHA_TAG=$SHA_TAG"
           echo "LAST_VERSION=$LAST_VERSION"
-          
+      - name: Set builder number
+        run: echo "builder_number=1" >> $GITHUB_OUTPUT
