@@ -44,19 +44,19 @@ jobs:
           echo "LAST_VERSION=$LAST_VERSION"
           
       - name: Get current version for the commit   
-        id: get-current-tag-version
+        id: current-build-number
         run: |
           CURRENT_VERSION=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$')
           echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT    
 
       - name: Set builder number
-        id: define-builder-number
-        if: ${{ steps.get-current-tag-version.outputs.CURRENT_VERSION != '' }}
-        run: echo "builder_number=${{ steps.get-current-tag-version.outputs.CURRENT_VERSION }}" >> $GITHUB_OUTPUT
+        id: define-existing-build-number
+        if: ${{ steps.current-build-number.outputs.CURRENT_VERSION != '' }}
+        run: echo "builder_number=${{ steps.current-build-number.outputs.CURRENT_VERSION }}" >> $GITHUB_OUTPUT
         
       - name: Generate builder number
-        id: define-builder-number
-        if: ${{ steps.get-current-tag-version.outputs.CURRENT_VERSION == '' }}
+        id: define-next-build-number
+        if: ${{ steps.current-build-number.outputs.CURRENT_VERSION == '' }}
         run:
           LAST_VERSION=$(git tag -l | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' | sort -u | tail -1)
           if [ -z "$LAST_VERSION" ]; then
