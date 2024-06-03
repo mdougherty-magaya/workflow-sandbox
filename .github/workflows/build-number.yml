@@ -1,0 +1,27 @@
+on:
+  workflow_call:
+    
+jobs:
+  main:
+    runs-on: ubuntu-latest    
+    steps:
+      - name: List working files
+        run: |
+          echo ${PWD}
+          ls -lash 
+          
+      - name: Git commands
+        run: |
+          git --version
+          git fetch --tags
+          git log --format=oneline
+          git show-ref --tags
+          git tag -l
+          git tag -l --points-at ${{ github.sha }}
+          SHA_TAG=$(git tag -l --points-at ${{ github.sha }})
+          git tag -l --points-at b9cb031909a15fa697d68b5d671e6ec15fa01d34
+          git tag -l --points-at 5048a0f245a03bfa49631ebe38ded00fef86e9bc
+          LAST_VERSION=$(git tag -l | sort -u | tail -1)
+          echo "SHA_TAG=$SHA_TAG"
+          echo "LAST_VERSION=$LAST_VERSION"
+          

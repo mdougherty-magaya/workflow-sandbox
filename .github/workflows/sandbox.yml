@@ -4,9 +4,9 @@ on:
     types: [published, created]
     branches:
       - 'main'
-  push:
-    branches:
-      - 'develop*'
+#  push:
+#    branches:
+#      - 'develop*'
 #  pull_request:
 #    types:
 #      - opened
