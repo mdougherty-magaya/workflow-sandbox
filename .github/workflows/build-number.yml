@@ -46,8 +46,8 @@ jobs:
       - name: Get current version for the commit   
         id: current-build-number
         run: |
-          CURRENT_VERSION=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$')
-          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT    
+          CURRENT_VERSION=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' || "")
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT
 
       - name: Set builder number
         id: define-existing-build-number
