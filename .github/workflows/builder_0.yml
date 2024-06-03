@@ -8,7 +8,7 @@ on:
 jobs:
   builder:
     needs:
-      - call-builder-number
+      - get-builder-number
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -30,6 +30,6 @@ jobs:
         run: |
           echo Build Number: ${{ needs.call-builder-number.outputs.builder_number }}
         
-  call-builder-number:
+  get-builder-number:
     uses: ./.github/workflows/build-number.yml
             
