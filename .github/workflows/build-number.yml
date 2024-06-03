@@ -59,7 +59,7 @@ jobs:
       - name: Generate builder number
         id: define-next-build-number
         if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER == '' }}
-        run:
+        run: |
           LAST_VERSION=$(git tag -l | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' | sort -u | tail -1) || HIDE_EXIT_CODE=$?
           if [ -z "$LAST_VERSION" ]; then
             LAST_VERSION="1"
