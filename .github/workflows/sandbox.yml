@@ -1,0 +1,78 @@
+name: Sandbox Workflow
+on:
+  release:
+    types: [published, created]
+    branches:
+      - 'main'
+  push:
+    branches:
+      - 'develop*'
+#  pull_request:
+#    types:
+#      - opened
+#      - reopened
+#      - synchronize
+#    branches:
+#      - 'main'
+  workflow_dispatch:
+
+jobs:
+  show-values:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Show condition values
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "github.event_name=${{ github.event_name }}"
+          echo "pull_request.number=${{ github.pull_request.number }}"
+          echo "ref=${{ github.ref_name }}"
+          echo "context=$GITHUB_CONTEXT"
+
+      - name: Show environment
+        env:
+          EVENT_NUMBER: ${{ github.event.number }}
+        run: env
+
+  dump_contexts_to_log:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+#          - macos-latest
+#          - windows-latest
+    runs-on: ${{ matrix.os }}
+    name: Dumping contexts for ${{ matrix.os }}  
+    steps:
+      - name: Dump GitHub context 
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump Env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+      - name: Dump job context
+        env:
+          JOB_CONTEXT: ${{ toJson(job) }}
+        run: echo "$JOB_CONTEXT"
+      - name: Dump steps context
+        env:
+          STEPS_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$STEPS_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      - name: Dump strategy context
+        env:
+          STRATEGY_CONTEXT: ${{ toJson(strategy) }}
+        run: echo "$STRATEGY_CONTEXT"
+      - name: Dump matrix context
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
+        run: echo "$MATRIX_CONTEXT"
+
