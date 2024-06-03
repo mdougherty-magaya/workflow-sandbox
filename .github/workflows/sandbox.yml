@@ -6,14 +6,14 @@ on:
       - 'main'
   push:
     branches:
-      - '**'
+      - 'develop*'
   pull_request:
-    types: [opened, reopened, synchronize, edited, closed, labeled, unlabeled, assigned, 
-            unassigned, review_requested, review_request_removed, ready_for_review, locked, 
-            unlocked]
+    types:
+      - opened
+      - reopened
+      - synchronize
     branches:
       - 'main'
-      
   workflow_dispatch:
 
 jobs:
@@ -40,7 +40,10 @@ jobs:
   dump_contexts_to_log:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os:
+          - ubuntu-latest
+#          - macos-latest
+#          - windows-latest
     runs-on: ${{ matrix.os }}
     name: Dumping contexts for ${{ matrix.os }}  
     steps:
