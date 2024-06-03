@@ -32,4 +32,6 @@ jobs:
         
   get-builder-number:
     uses: ./.github/workflows/build-number.yml
+    with:
+      sub_folder: '3.0.0'
             

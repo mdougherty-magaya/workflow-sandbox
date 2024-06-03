@@ -1,5 +1,11 @@
 on:
   workflow_call:
+    inputs: 
+      sub_folder:
+        description: "The sub folder"
+        required: false
+        default: ""
+        type: string
     outputs:
       builder_number: 
         description: "The builder number"
@@ -34,10 +40,30 @@ jobs:
           git tag -l --points-at b9cb031909a15fa697d68b5d671e6ec15fa01d34
           git tag -l --points-at 5048a0f245a03bfa49631ebe38ded00fef86e9bc
           LAST_VERSION=$(git tag -l | sort -u | tail -1)
-          echo "SHA_TAG=$SHA_TAG"
+          echo "SHA_TAG=$SHA_TAG"          
           echo "LAST_VERSION=$LAST_VERSION"
+          
+      - name: Get current version for the commit   
+        id: get-current-tag-version
+        run: |
+          CURRENT_VERSION=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$')
+          echo "CURRENT_VERSION=$CURRENT_VERSION" >> $GITHUB_OUTPUT    
 
       - name: Set builder number
         id: define-builder-number
-        if: ${{ always() }}
-        run: echo "builder_number=1" >> $GITHUB_OUTPUT
+        if: ${{ outputs.CURRENT_VERSION != '' }}
+        run: echo "builder_number=${{ outputs.CURRENT_VERSION }}" >> $GITHUB_OUTPUT
+        
+      - name: Generate builder number
+        id: define-builder-number
+        if: ${{ outputs.CURRENT_VERSION == '' }}
+        run:
+          LAST_VERSION=$(git tag -l | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' | sort -u | tail -1)
+          if [ -z "$LAST_VERSION" ]; then
+            LAST_VERSION="1"
+          else
+            LAST_VERSION=$(echo $LAST_VERSION | sed -e "s/^build\/${{ inputs.sub_folder }}//")
+          fi
+          LAST_VERSION=$((LAST_VERSION + 1))
+          git tag "build/${{ inputs.sub_folder }}${LAST_VERSION}" ${{ github.sha }} && git push --tags
+          echo "builder_number=$LAST_VERSION" >> $GITHUB_OUTPUT
