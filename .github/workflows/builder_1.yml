@@ -27,5 +27,5 @@ jobs:
         
       - name: Generate build number
         id: build-number
-        uses: ./.github/workflows/build-number.yml
+        uses: ./.github/workflows/build-number.yml@develop-v1.1.0-0
             
