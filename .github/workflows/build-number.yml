@@ -46,8 +46,10 @@ jobs:
       - name: Get current version for the commit   
         id: current-build-number
         run: |
-          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' || "")
-          echo "CURRENT_BUILD_NUMBER=$CURRENT_NUMBER" >> $GITHUB_OUTPUT
+          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$') || HIDE_EXIT_CODE=$?
+          if [ ! -z "$CURRENT_NUMBER" ]; then
+            echo "CURRENT_BUILD_NUMBER=$CURRENT_NUMBER" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set builder number
         id: define-existing-build-number
