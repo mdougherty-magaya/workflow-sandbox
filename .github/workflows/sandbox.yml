@@ -39,10 +39,12 @@ jobs:
         
       - name: Git commands
         run: |
+          git --version
           git tag -l
           git tag -l --points-at ${{ github.sha }}
           git tag -l --points-at b9cb031909a15fa697d68b5d671e6ec15fa01d34
           git tag -l --points-at 5048a0f245a03bfa49631ebe38ded00fef86e9bc
+          ls -la
 
   dump_contexts_to_log:
     strategy:
