@@ -55,9 +55,12 @@ jobs:
   get-package-version:
     runs-on: ubuntu-latest
     steps:
+    - name: Find all files
+      run: |
+        find ${{ github.workspace }} -type f
+
     - name: Read base version from project file
       run: |
-        find ${{ github.workspace }} -name \*.csproj
         PACKAGE_VERSION=$(grep "<PackageVersion>" ${{ github.workspace }}/workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
         echo "PackageVersion: ${PACKAGE_VERSION}" 
         echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
