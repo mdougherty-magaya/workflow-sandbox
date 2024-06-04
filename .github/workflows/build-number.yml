@@ -69,4 +69,6 @@ jobs:
           
       - name: Dump outputs
         if: always()
-        run: echo "$GITHUB_OUTPUT"
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(jobs.main.outputs) }}
+        run: echo "$OUTPUT_CONTEXT"
