@@ -83,5 +83,5 @@ jobs:
         run: echo "$OUTPUT_CONTEXT"
       - name: Dump job outputs
         env:
-          OUTPUT_CONTEXT: ${{ toJson(jobs.main.outputs) }}
+          OUTPUT_CONTEXT: ${{ toJson(needs.main.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
