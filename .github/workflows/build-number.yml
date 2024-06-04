@@ -68,8 +68,8 @@ jobs:
             LAST_BUILD_NUMBER=$(echo $LAST_BUILD_NUMBER | sed -e "s/^build\/${SUB_FOLDER}//")
           fi
           LAST_BUILD_NUMBER=$((LAST_BUILD_NUMBER + 1))
-          git tag "build/${{ inputs.sub_folder }}${LAST_BUILD_NUMBER}" ${{ github.sha }} && git push --tags 
-          if [ $? -ne 0 ]; then
+          git tag "build/${{ inputs.sub_folder }}${LAST_BUILD_NUMBER}" ${{ github.sha }} && git push --tags || HIDE_EXIT_CODE=$?
+          if [ $HIDE_EXIT_CODE -ne 0 ]; then
             git fetch --tags
             CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$') || HIDE_EXIT_CODE=$?
             if [ ! -z "$CURRENT_NUMBER" ]; then
