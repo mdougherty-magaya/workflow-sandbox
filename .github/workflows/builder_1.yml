@@ -9,29 +9,46 @@ jobs:
   builder:
     needs:
       - get-build-number
+      - get-package-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-tags: true
+          
+      - name: Dump 'needs' outputs
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(needs.get-package-version.outputs) }}
+        run: echo "$OUTPUT_CONTEXT"
 
+      - name: Show Package Version 
+        run: |
+          echo "PackageVersion: ${{ needs.get-package-version.outputs.packageVersion }}" 
+          echo "PACKAGE_VERSION=${{ needs.get-package-version.outputs.packageVersion }}" >> "$GITHUB_ENV"
+        
       - name: Show environment
         run: env
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+        
       - name: Dump runner context
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
 
+      - name: Dump env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+        
       - name: Dump 'needs' outputs
         env:
           OUTPUT_CONTEXT: ${{ toJson(needs.get-build-number.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
-      
+        
       - name: Show build number
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
@@ -39,5 +56,25 @@ jobs:
   get-build-number:
     uses: ./.github/workflows/build-number.yml
     with:
-      sub_folder: '3.0.0/'
-            
+      prefix: "${{ env.PACKAGE_VERSION }}/"
+
+  get-package-version:
+    runs-on: ubuntu-latest
+    outputs: 
+      packageVersion: ${{ steps.read-file.outputs.packageVersion }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Find all files
+        run: |
+          echo "Workspace: ${{github.workspace}}"
+          echo "PWD: ${PWD}"
+          find . -type f -name \*.csproj
+  
+      - name: Read base version from project file
+        id: read-file
+        run: |
+          PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
+          echo "PackageVersion: ${PACKAGE_VERSION}" 
+          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+
