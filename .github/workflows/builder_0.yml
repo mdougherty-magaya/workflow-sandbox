@@ -55,15 +55,17 @@ jobs:
   get-package-version:
     runs-on: ubuntu-latest
     steps:
-    - name: Find all files
-      run: |
-        echo "Workspace: ${{github.workspace}}"
-        echo "PWD: ${PWD}"
-        find . -type f
-
-    - name: Read base version from project file
-      run: |
-        PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
-        echo "PackageVersion: ${PACKAGE_VERSION}" 
-        echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Find all files
+        run: |
+          echo "Workspace: ${{github.workspace}}"
+          echo "PWD: ${PWD}"
+          find . -type f
+  
+      - name: Read base version from project file
+        run: |
+          PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
+          echo "PackageVersion: ${PACKAGE_VERSION}" 
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
 
