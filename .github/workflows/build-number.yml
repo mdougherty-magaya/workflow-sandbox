@@ -75,11 +75,11 @@ jobs:
     steps:
       - name: Dump step outputs v1
         env:
-          OUTPUT_CONTEXT: ${{ toJson(jobs.main.steps.existing-build-number.outputs) }}
+          OUTPUT_CONTEXT: ${{ toJson(steps.existing-build-number.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
       - name: Dump step outputs v2
         env:
-          OUTPUT_CONTEXT: ${{ toJson(jobs.main.steps.next-build-number.outputs) }}
+          OUTPUT_CONTEXT: ${{ toJson(steps.next-build-number.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
       - name: Dump job outputs
         env:
