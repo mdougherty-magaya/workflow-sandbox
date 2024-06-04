@@ -19,9 +19,14 @@ jobs:
     
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-tags: true
+          
+      - name: Fetch tags
+        run: |
+          git fetch --tags
+          git show-ref --tags
 
       - name: Get current version for the commit
         id: current-build-number
@@ -63,4 +68,5 @@ jobs:
           echo "builder_number=$LAST_BUILD_NUMBER" >> $GITHUB_OUTPUT
           
       - name: Dump outputs
+        if: always()
         run: echo "$GITHUB_OUTPUT"
