@@ -64,7 +64,8 @@ jobs:
           if [ -z "$LAST_BUILD_NUMBER" ]; then
             LAST_BUILD_NUMBER="0"
           else
-            LAST_BUILD_NUMBER=$(echo $LAST_BUILD_NUMBER | sed -e "s/^build\/${{ inputs.sub_folder }}//")
+            SUB_FOLDER=$(echo ${{ inputs.sub_folder }} | sed -E 's/(\/)/\\\//')
+            LAST_BUILD_NUMBER=$(echo $LAST_BUILD_NUMBER | sed -e "s/^build\/${SUB_FOLDER}//")
           fi
           LAST_BUILD_NUMBER=$((LAST_BUILD_NUMBER + 1))
           git tag "build/${{ inputs.sub_folder }}${LAST_BUILD_NUMBER}" ${{ github.sha }} && git push --tags 
@@ -72,7 +73,8 @@ jobs:
             git fetch --tags
             CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$') || HIDE_EXIT_CODE=$?
             if [ ! -z "$CURRENT_NUMBER" ]; then
-              LAST_BUILD_NUMBER=$CURRENT_NUMBER
+              SUB_FOLDER=$(echo ${{ inputs.sub_folder }} | sed -E 's/(\/)/\\\//')
+              LAST_BUILD_NUMBER=$(echo $CURRENT_NUMBER |  sed -e "s/^build\/${SUB_FOLDER}//")
             fi
           fi
           echo "builder_number=$LAST_BUILD_NUMBER" >> $GITHUB_OUTPUT
