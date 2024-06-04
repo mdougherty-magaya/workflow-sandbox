@@ -9,23 +9,12 @@ jobs:
   builder:
     needs:
       - get-build-number
-      - get-package-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
           fetch-tags: true
-          
-      - name: Dump 'get-package-version' outputs
-        env:
-          OUTPUT_CONTEXT: ${{ toJson(needs.get-package-version.outputs) }}
-        run: echo "$OUTPUT_CONTEXT"
-
-      - name: Show Package Version 
-        run: |
-          echo "PackageVersion: ${{ needs.get-package-version.outputs.packageVersion }}" 
-          echo "PACKAGE_VERSION=${{ needs.get-package-version.outputs.packageVersion }}" >> "$GITHUB_ENV"
         
       - name: Show environment
         run: env
@@ -55,6 +44,8 @@ jobs:
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
         
   get-build-number:
+    needs: 
+      - get-package-version
     uses: ./.github/workflows/build-number.yml
     with:
       prefix: "${{ needs.get-package-version.outputs.packageVersion }}/"
@@ -66,11 +57,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Find all files
-        run: |
-          echo "Workspace: ${{github.workspace}}"
-          echo "PWD: ${PWD}"
-          find . -type f -name \*.csproj
   
       - name: Read base version from project file
         id: read-file
