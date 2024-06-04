@@ -67,8 +67,13 @@ jobs:
           fi
           echo "builder_number=$LAST_BUILD_NUMBER" >> $GITHUB_OUTPUT
           
-      - name: Dump outputs
+      - name: Dump outputs v1
         if: always()
         env:
-          OUTPUT_CONTEXT: ${{ toJson(jobs.main.outputs) }}
+          OUTPUT_CONTEXT: ${{ toJson(steps.existing-build-number.outputs) }}
+        run: echo "$OUTPUT_CONTEXT"
+      - name: Dump outputs v2
+        if: always()
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(steps.next-build-number.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
