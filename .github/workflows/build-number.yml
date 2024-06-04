@@ -77,6 +77,11 @@ jobs:
     needs:
       - main
     steps:
+      - name: Dump workflow inputs
+        env:
+          INPUT_CONTEXT: ${{ toJson(inputs) }}
+        run: echo "$INPUT_CONTEXT"
+        
       - name: Dump step outputs v1
         env:
           OUTPUT_CONTEXT: ${{ toJson(steps.existing-build-number.outputs) }}
