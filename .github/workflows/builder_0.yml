@@ -16,10 +16,15 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-tags: true
+          
+      - name: Dump 'needs' outputs
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(needs.get-package-version.outputs) }}
+        run: echo "$OUTPUT_CONTEXT"
 
       - name: Show Package Version 
         run: |
-          echo "PackageVersion: ${{ env.PACKAGE_VERSION }}" 
+          echo "PackageVersion: ${{ needs.get-package-version.outputs.packageVersion }}" 
         
       - name: Show environment
         run: env
@@ -54,6 +59,8 @@ jobs:
 
   get-package-version:
     runs-on: ubuntu-latest
+    outputs: 
+      packageVersion: ${{ steps.read-file.outputs.packageVersion }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -61,11 +68,12 @@ jobs:
         run: |
           echo "Workspace: ${{github.workspace}}"
           echo "PWD: ${PWD}"
-          find . -type f
+          find . -type f -name \*.csproj
   
       - name: Read base version from project file
+        id: read-file
         run: |
           PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
           echo "PackageVersion: ${PACKAGE_VERSION}" 
-          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
 
