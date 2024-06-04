@@ -81,7 +81,8 @@ jobs:
         env:
           OUTPUT_CONTEXT: ${{ toJson(steps.next-build-number.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
-      - name: Dump job outputs
+
+      - name: Dump 'needs' outputs
         env:
           OUTPUT_CONTEXT: ${{ toJson(needs.main.outputs) }}
         run: echo "$OUTPUT_CONTEXT"

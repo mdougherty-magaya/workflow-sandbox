@@ -26,6 +26,12 @@ jobs:
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
+        
+      - name: Dump 'needs' outputs
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(needs.get-build-number.outputs) }}
+        run: echo "$OUTPUT_CONTEXT"
+        
       - name: Show build number
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
