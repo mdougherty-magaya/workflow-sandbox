@@ -15,7 +15,7 @@ jobs:
   main:
     runs-on: ubuntu-latest
     outputs:
-      builder_number: ${{ steps.existing-build-number.outputs.builder_number }}
+      builder_number: ${{ steps.existing-build-number.outputs.builder_number || steps.next-build-number.outputs.builder_number }}
     
     steps:
       - name: Checkout repository
