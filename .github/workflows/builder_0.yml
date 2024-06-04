@@ -18,7 +18,8 @@ jobs:
           fetch-tags: true
 
       - name: Show Package Version 
-        run: echo ${{ env.PACKAGE_VERSION }} 
+        run: |
+          echo "PackageVersion: ${{ env.PACKAGE_VERSION }}" 
         
       - name: Show environment
         run: env
@@ -57,5 +58,6 @@ jobs:
     - name: Read base version from project file
       run: |
         PACKAGE_VERSION=$(grep "<PackageVersion>" workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
+        echo "PackageVersion: ${PACKAGE_VERSION}" 
         echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
 
