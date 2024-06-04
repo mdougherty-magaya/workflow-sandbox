@@ -28,9 +28,9 @@ jobs:
         run: echo "$RUNNER_CONTEXT"
       - name: Show build number
         run: |
-          echo Build Number: ${{ needs.get-builder-number.outputs.builder_number }}
+          echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
         
-  get-builder-number:
+  get-build-number:
     uses: ./.github/workflows/build-number.yml
     with:
       sub_folder: '3.0.0/'
