@@ -53,9 +53,6 @@ jobs:
           echo "::notice::Last build number: $LAST_BUILD_NUMBER"
           if [ -z "$LAST_BUILD_NUMBER" ]; then
             LAST_BUILD_NUMBER="0"
-#          else
-#            SUB_FOLDER=$(echo ${{ inputs.sub_folder }} | sed -E 's/(\/)/\\\//')
-#            LAST_BUILD_NUMBER=$(echo $LAST_BUILD_NUMBER | sed -e "s/^build\/${SUB_FOLDER}//")
           fi
           NEXT_BUILD_NUMBER=$((LAST_BUILD_NUMBER + 1))
           EXIT_CODE=0
