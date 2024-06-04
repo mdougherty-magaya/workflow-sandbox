@@ -8,7 +8,8 @@ on:
 jobs:
   builder:
     needs:
-      - get-build-number
+#      - get-build-number
+      - get-package-version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,16 +17,25 @@ jobs:
         with:
           fetch-tags: true
 
+      - name: Show Package Version 
+        run: echo ${{ env.PACKAGE_VERSION }} 
+        
       - name: Show environment
         run: env
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
+        
       - name: Dump runner context
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
+
+      - name: Dump env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
         
       - name: Dump 'needs' outputs
         env:
@@ -36,8 +46,16 @@ jobs:
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
         
-  get-build-number:
-    uses: ./.github/workflows/build-number.yml
-    with:
-      sub_folder: '3.0.0/'
+#  get-build-number:
+#    uses: ./.github/workflows/build-number.yml
+#    with:
+#      sub_folder: "${{ env.PACKAGE_VERSION }}/"
             
+  get-package-version:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Read base version from project file
+      run: |
+        PACKAGE_VERSION=$(grep "<PackageVersion>" workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
+        echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> "$GITHUB_ENV"
+
