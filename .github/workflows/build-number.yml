@@ -15,7 +15,7 @@ jobs:
   main:
     runs-on: ubuntu-latest    
     outputs:
-      builder_number: ${{ steps.define-builder-number.outputs.builder_number }}
+      builder_number: ${{ steps.define-existing-build-number.outputs.builder_number || steps.define-next-build-number.outputs.builder_number }}
     
     steps:
       - name: Checkout repository
@@ -62,7 +62,7 @@ jobs:
         run: |
           LAST_VERSION=$(git tag -l | grep -E '^build/${{ inputs.sub_folder }}[0-9]+$' | sort -u | tail -1) || HIDE_EXIT_CODE=$?
           if [ -z "$LAST_VERSION" ]; then
-            LAST_VERSION="1"
+            LAST_VERSION="0"
           else
             LAST_VERSION=$(echo $LAST_VERSION | sed -e "s/^build\/${{ inputs.sub_folder }}//")
           fi
