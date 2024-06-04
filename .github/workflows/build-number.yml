@@ -28,6 +28,10 @@ jobs:
           git fetch --tags
           git show-ref --tags
 
+      - name: Show prefix
+        run: |
+          echo "Prefix input: ${{ inputs.prefix }}"
+
       - name: Get current version for the commit
         id: current-build-number
         run: |

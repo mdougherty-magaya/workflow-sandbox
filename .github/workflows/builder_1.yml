@@ -17,7 +17,7 @@ jobs:
         with:
           fetch-tags: true
           
-      - name: Dump 'needs' outputs
+      - name: Dump 'get-package-version' outputs
         env:
           OUTPUT_CONTEXT: ${{ toJson(needs.get-package-version.outputs) }}
         run: echo "$OUTPUT_CONTEXT"
@@ -29,6 +29,12 @@ jobs:
         
       - name: Show environment
         run: env
+
+      - name: Dump env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+        
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
@@ -38,11 +44,6 @@ jobs:
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
-
-      - name: Dump env context
-        env:
-          ENV_CONTEXT: ${{ toJson(env) }}
-        run: echo "$ENV_CONTEXT"
         
       - name: Dump 'needs' outputs
         env:
@@ -56,7 +57,7 @@ jobs:
   get-build-number:
     uses: ./.github/workflows/build-number.yml
     with:
-      prefix: "${{ env.PACKAGE_VERSION }}/"
+      prefix: "${{ needs.get-package-version.outputs.packageVersion }}/"
 
   get-package-version:
     runs-on: ubuntu-latest
