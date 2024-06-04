@@ -8,7 +8,7 @@ on:
 jobs:
   builder:
     needs:
-      - get-builder-number
+      - get-build-number
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
