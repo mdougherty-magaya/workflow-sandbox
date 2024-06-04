@@ -7,15 +7,15 @@ on:
         default: ""
         type: string
     outputs:
-      builder_number:
-        description: "The builder number"
-        value: ${{ jobs.main.outputs.builder_number }}
+      build_number:
+        description: "The build number"
+        value: ${{ jobs.main.outputs.build_number }}
 
 jobs:
   main:
     runs-on: ubuntu-latest
     outputs:
-      builder_number: ${{ steps.existing-build-number.outputs.builder_number || steps.next-build-number.outputs.builder_number }}
+      build_number: ${{ steps.existing-build-number.outputs.build_number || steps.next-build-number.outputs.build_number }}
     
     steps:
       - name: Checkout repository
@@ -41,7 +41,7 @@ jobs:
       - name: Set builder number
         id: existing-build-number
         if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER != '' }}
-        run: echo "builder_number=${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER }}" >> $GITHUB_OUTPUT
+        run: echo "build_number=${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER }}" >> $GITHUB_OUTPUT
 
       - name: Generate builder number
         id: next-build-number
@@ -65,7 +65,7 @@ jobs:
               LAST_BUILD_NUMBER=$(echo $CURRENT_NUMBER |  sed -e "s/^build\/${SUB_FOLDER}//")
             fi
           fi
-          echo "builder_number=$LAST_BUILD_NUMBER" >> $GITHUB_OUTPUT
+          echo "build_number=$LAST_BUILD_NUMBER" >> $GITHUB_OUTPUT
           
         
   dump-outputs:
