@@ -1,4 +1,6 @@
 name: Builder 1
+run-name: Build 1 Application
+
 on:
   push:
     branches:
@@ -34,11 +36,16 @@ jobs:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
         
-      - name: Dump 'needs' outputs
+      - name: Dump needs outputs
         env:
-          OUTPUT_CONTEXT: ${{ toJson(needs.get-build-number.outputs) }}
+          OUTPUT_CONTEXT: ${{ toJson(needs) }}
         run: echo "$OUTPUT_CONTEXT"
         
+      - name: Dump inputs context
+        env:
+          INPUTS_CONTEXT: ${{ toJson(inputs) }}
+        run: echo "$INPUTS_CONTEXT"
+      
       - name: Show build number
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
