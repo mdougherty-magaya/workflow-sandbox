@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "::debug::Prefix from input: `${{ inputs.prefix }}`"
 
-      - name: Get current version for ${{ github.sha }}
+      - name: Get build number for ${{ github.sha }}
         id: current-build-number
         continue-on-error: true
         run: |
@@ -60,12 +60,12 @@ jobs:
             echo "CURRENT_BUILD_NUMBER=$CURRENT_NUMBER" >> $GITHUB_OUTPUT
           fi
 
-      - name: Set builder number
+      - name: Output existing builder number
         id: existing-build-number
         if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER != '' }}
         run: echo "build_number=${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER }}" >> $GITHUB_OUTPUT
 
-      - name: Generate builder number
+      - name: Generate next builder number
         id: next-build-number
         if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER == '' }}
         run: |
