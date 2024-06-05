@@ -22,6 +22,8 @@ on:
         description: "The build number"
         value: ${{ jobs.main.outputs.build_number }}
 
+env:
+  SHA_ABBREV: $(echo $GITHUB_SHA | cut -c1-8)
 # TODO need to make sure this workflow is documented well!
 jobs:
   main:
@@ -45,7 +47,7 @@ jobs:
         run: |
           echo "::debug::Prefix from input: `${{ inputs.prefix }}`"
 
-      - name: Get current version for $GITHUB_SHA:8
+      - name: "Get current version for ${{ github.sha }} ($SHA_ABBREV)"
         id: current-build-number
         continue-on-error: true
         run: |
