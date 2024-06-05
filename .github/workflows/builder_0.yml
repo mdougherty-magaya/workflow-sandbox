@@ -59,12 +59,12 @@ jobs:
 #          /home/runner/.dotnet/tools:
 #          /usr/local/sbin:
 #          /usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-#               sudo apt-get -q update && sudo apt-get -q install -y android-sdk
-#               /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install "build-tools;34.0.0"
+#               find $ANDROID_NDK_LATEST_HOME -type f
       - name: Install Android SDK
         run: |
-          find $ANDROID_NDK_LATEST_HOME -type f
-          
+          sudo apt-get -q update && sudo apt-get -q install -y android-sdk
+          sudo ln -s /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager ~/.local/bin/sdkmanager
+          sdkmanager --install "build-tools;34.0.0"        
         
   get-build-number:
     name: Retrieve build number
