@@ -53,7 +53,7 @@ jobs:
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y android-sdk
           sudo ln -s /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
-          sdkmanager --install "build-tools;34.0.0"        
+          sdkmanager --install "build-tools;21.1.2" "platforms;android-21"       
         
       - name: Restore Packages
         run: dotnet restore
