@@ -51,11 +51,20 @@ jobs:
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
           
+#          PATH=/snap/bin:
+#          /home/runner/.local/bin:
+#          /opt/pipx_bin:/home/runner/.cargo/bin:
+#          /home/runner/.config/composer/vendor/bin:
+#          /usr/local/.ghcup/bin:
+#          /home/runner/.dotnet/tools:
+#          /usr/local/sbin:
+#          /usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+#               sudo apt-get -q update && sudo apt-get -q install -y android-sdk
+#               /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install "build-tools;34.0.0"
       - name: Install Android SDK
         run: |
-          sudo apt-get update && sudo apt-get install android-sdk
-          find / -name sdkmanager
-          sdkmanager --install "build-tools;34.0.0"
+          find $ANDROID_NDK_LATEST_HOME -type f
+          
         
   get-build-number:
     name: Retrieve build number
