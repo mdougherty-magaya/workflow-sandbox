@@ -9,6 +9,7 @@ on:
 
 jobs:
   builder:
+    name: Build application's Variant-0 
     needs:
       - get-build-number
     runs-on: ubuntu-latest
@@ -51,6 +52,7 @@ jobs:
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
         
   get-build-number:
+    name: Retrieve build number
     needs: 
       - get-package-version
     uses: ./.github/workflows/build-number.yml
@@ -58,6 +60,7 @@ jobs:
       prefix: "${{ needs.get-package-version.outputs.packageVersion }}/"
 
   get-package-version:
+    name: Retrieve package version 
     runs-on: ubuntu-latest
     outputs: 
       packageVersion: ${{ steps.read-file.outputs.packageVersion }}
