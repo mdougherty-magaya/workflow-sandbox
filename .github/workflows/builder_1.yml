@@ -1,5 +1,5 @@
 name: Builder 1
-run-name: Build 1 Application
+run-name: "${{ github.workflow }} triggered by ${{ github.triggering_actor }}"
 
 on:
   push:

@@ -1,3 +1,13 @@
+###############################################################################
+# Reusable GitHub workflow to manage the build number for other workflow's 
+# as needed. It uses a tag to ensure the build number is unique and consecutive,
+# but also available to all workflows. 
+# 
+name: Manage build number  
+run-name: Manage ${{ github.workflow }}'s build number
+permissions: 
+  contents: write
+
 on:
   workflow_call:
     inputs:
@@ -35,8 +45,9 @@ jobs:
 
       - name: Get current version for the commit
         id: current-build-number
+        continue-on-error: true
         run: |
-          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$') || HIDE_EXIT_CODE=$?
+          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$')
           echo "Current build tag: $CURRENT_NUMBER"
           if [ ! -z "$CURRENT_NUMBER" ]; then
             PREFIX=$(echo ${{ inputs.prefix }} | sed -E 's/(\/)/\\\//')
@@ -63,6 +74,7 @@ jobs:
           EXIT_CODE=0
           git tag "build/${{ inputs.prefix }}${NEXT_BUILD_NUMBER}" ${{ github.sha }} && git push --tags || EXIT_CODE=$?
           if [ $EXIT_CODE -ne 0 ]; then
+            # Refresh the tags list
             git fetch --tags
             CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$') || HIDE_EXIT_CODE=$?
             if [ ! -z "$CURRENT_NUMBER" ]; then
