@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "::debug::Prefix from input: `${{ inputs.prefix }}`"
 
-      - name: Get current version for the commit
+      - name: Get current version for ${GITHUB_SHA:8}
         id: current-build-number
         continue-on-error: true
         run: |
