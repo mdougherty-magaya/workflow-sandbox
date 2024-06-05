@@ -5,6 +5,7 @@
 # 
 name: Manage build number  
 run-name: Manage ${{ github.workflow }}'s build number
+# Need to be able to push new tags to the repository
 permissions: 
   contents: write
 
