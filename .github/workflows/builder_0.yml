@@ -50,6 +50,10 @@ jobs:
       - name: Show build number
         run: |
           echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
+          
+      - name: Install Android SDK
+        run: |
+          apt update && sudo apt install android-sdk
         
   get-build-number:
     name: Retrieve build number
