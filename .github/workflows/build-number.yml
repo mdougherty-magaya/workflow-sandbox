@@ -48,7 +48,7 @@ jobs:
         id: current-build-number
         continue-on-error: true
         run: |
-          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$')
+          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$') || HIDE_EXIT_CODE=$?
           echo "Current build tag: $CURRENT_NUMBER"
           if [ ! -z "$CURRENT_NUMBER" ]; then
             PREFIX=$(echo ${{ inputs.prefix }} | sed -E 's/(\/)/\\\//')
