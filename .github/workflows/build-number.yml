@@ -47,7 +47,7 @@ jobs:
         run: |
           echo "::debug::Prefix from input: `${{ inputs.prefix }}`"
 
-      - name: "Get current version for ${{ github.sha }} ($SHA_ABBREV)"
+      - name: Get current version for ${{ github.sha }}
         id: current-build-number
         continue-on-error: true
         run: |
