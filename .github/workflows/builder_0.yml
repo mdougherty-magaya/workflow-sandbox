@@ -29,7 +29,7 @@ jobs:
 
       - name: Set package version suffix
         run: |
-          echo "VERSION_POSTFIX=-alpha.$(echo $GITHUB_REF_NAME | tr '[:upper:]' '[:lower:]' | cut -c1-16).${BUILD_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-alpha.$(echo $GITHUB_REF_NAME | tr '[:upper:]' '[:lower:]' | cut -c1-15 | sed 's/[\.-]*$//g').${BUILD_NUMBER}" >> "$GITHUB_ENV"
         
       - name: Show environment
         run: env
@@ -62,9 +62,11 @@ jobs:
       - name: Show build number
         run: |
           echo packageVersion: ${{ needs.get-package-version.outputs.packageVersion }}
-          echo PACKAGE_VERSION: $PACKAGE_VERSION
           echo build_number: ${{ needs.get-build-number.outputs.build_number }}
-          echo BUILD_NUMBER: $BUILD_NUMBER
+          echo PACKAGE_VERSION: $PACKAGE_VERSION
+          echo BUILD_NUMBER:    $BUILD_NUMBER
+          echo VERSION_CODE:    $VERSION_CODE
+          echo VERSION_POSTFIX: $VERSION_POSTFIX
 
       - name: Install Android SDK
         run: |
