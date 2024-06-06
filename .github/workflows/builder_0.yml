@@ -26,6 +26,10 @@ jobs:
       - name: Set Version code
         run: |
           echo "VERSION_CODE=$(echo $PACKAGE_VERSION | sed 's/[^0-9]*//g')$(($BUILD_NUMBER))" >> "$GITHUB_ENV"
+
+      - name: Set package version suffix
+        run: |
+          echo "VERSION_POSTFIX=-alpha.$(echo $GITHUB_REF_NAME | tr '[:upper:]' '[:lower:]' | cut -c1-16).${BUILD_NUMBER}" >> "$GITHUB_ENV"
         
       - name: Show environment
         run: env
