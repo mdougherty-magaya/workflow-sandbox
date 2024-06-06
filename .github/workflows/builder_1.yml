@@ -1,0 +1,77 @@
+name: Builder 1
+run-name: "${{ github.workflow }} triggered by ${{ github.triggering_actor }}"
+
+on:
+  push:
+    branches:
+      - 'develop*'
+  workflow_dispatch:
+
+jobs:
+  builder:
+    name: Build application's Variant-1 
+    needs:
+      - get-build-number
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-tags: true
+        
+      - name: Show environment
+        run: env
+
+      - name: Dump env context
+        env:
+          ENV_CONTEXT: ${{ toJson(env) }}
+        run: echo "$ENV_CONTEXT"
+        
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+        
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+        
+      - name: Dump needs outputs
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(needs) }}
+        run: echo "$OUTPUT_CONTEXT"
+        
+      - name: Dump inputs context
+        env:
+          INPUTS_CONTEXT: ${{ toJson(inputs) }}
+        run: echo "$INPUTS_CONTEXT"
+      
+      - name: Show build number
+        run: |
+          echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
+        
+  get-build-number:
+    name: Retrieve build number
+    needs: 
+      - get-package-version
+    uses: ./.github/workflows/build-number.yml
+    with:
+      prefix: "${{ needs.get-package-version.outputs.packageVersion }}/"
+
+  get-package-version:
+    name: Retrieve package version 
+    runs-on: ubuntu-latest
+    outputs: 
+      packageVersion: ${{ steps.read-file.outputs.packageVersion }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+  
+      - name: Read base version from project file
+        id: read-file
+        run: |
+          PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
+          echo "PackageVersion: ${PACKAGE_VERSION}" 
+          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
+

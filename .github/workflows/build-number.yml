@@ -1,0 +1,107 @@
+###############################################################################
+# Reusable GitHub workflow to manage the build number for other workflow's 
+# as needed. It uses a tag to ensure the build number is unique and consecutive,
+# but also available to all workflows. 
+# 
+name: Manage build number  
+run-name: Manage ${{ github.workflow }}'s build number
+# Need write permission to be able to push new tags to the repository
+permissions: 
+  contents: write
+
+on:
+  workflow_call:
+    inputs:
+      prefix:
+        description: "The prefix of the build number"
+        required: false
+        default: ""
+        type: string
+    outputs:
+      build_number:
+        description: "The build number"
+        value: ${{ jobs.main.outputs.build_number }}
+
+jobs:
+  main:
+    name: Main
+    runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.existing-build-number.outputs.build_number || steps.next-build-number.outputs.build_number }}
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          
+      - name: Fetch tags
+        run: |
+          git fetch --tags
+          git show-ref --tags
+
+      - name: Log prefix
+        run: |
+          echo "::debug::Prefix from input: `${{ inputs.prefix }}`"
+
+      - name: Get build number for ${{ github.sha }}
+        id: current-build-number
+        continue-on-error: true
+        run: |
+          CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$') || HIDE_EXIT_CODE=$?
+          echo "::debug::Current build tag: $CURRENT_NUMBER"
+          if [ ! -z "$CURRENT_NUMBER" ]; then
+            PREFIX=$(echo ${{ inputs.prefix }} | sed -E 's/(\/)/\\\//')
+            CURRENT_NUMBER=$(echo $CURRENT_NUMBER | sed -e "s/^build\/${PREFIX}//")      
+            echo "::debug::Output current build number: $CURRENT_NUMBER"
+            echo "CURRENT_BUILD_NUMBER=$CURRENT_NUMBER" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Output existing builder number
+        id: existing-build-number
+        if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER != '' }}
+        run: echo "build_number=${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER }}" >> $GITHUB_OUTPUT
+
+      - name: Generate next builder number
+        id: next-build-number
+        if: ${{ steps.current-build-number.outputs.CURRENT_BUILD_NUMBER == '' }}
+        run: |
+          LAST_BUILD_NUMBER=$(git tag -l | grep -E '^build/${{ inputs.prefix }}[0-9]+$' | awk -F'/' '{print $NF}' | sort -un | tail -1) || HIDE_EXIT_CODE=$?
+          echo "::debug::Last build number: $LAST_BUILD_NUMBER"
+          if [ -z "$LAST_BUILD_NUMBER" ]; then
+            LAST_BUILD_NUMBER="0"
+          fi
+          NEXT_BUILD_NUMBER=$((LAST_BUILD_NUMBER + 1))
+          EXIT_CODE=0
+          git tag "build/${{ inputs.prefix }}${NEXT_BUILD_NUMBER}" ${{ github.sha }} && git push --tags || EXIT_CODE=$?
+          if [ $EXIT_CODE -ne 0 ]; then
+            # Refresh the tags list
+            git fetch --tags
+            CURRENT_NUMBER=$(git tag -l --points-at ${{ github.sha }} | grep -E '^build/${{ inputs.prefix }}[0-9]+$') || HIDE_EXIT_CODE=$?
+            if [ ! -z "$CURRENT_NUMBER" ]; then
+              PREFIX=$(echo ${{ inputs.prefix }} | sed -E 's/(\/)/\\\//')
+              NEXT_BUILD_NUMBER=$(echo $CURRENT_NUMBER |  sed -e "s/^build\/${PREFIX}//")
+            fi
+          fi
+          echo "build_number=$NEXT_BUILD_NUMBER" >> $GITHUB_OUTPUT
+        
+  dump-outputs:
+    name: Dump debug values
+    runs-on: ubuntu-latest
+    needs:
+      - main
+    steps:
+      - name: Dump workflow inputs
+        env:
+          INPUT_CONTEXT: ${{ toJson(inputs) }}
+        run: echo "$INPUT_CONTEXT"
+        
+      - name: Dump steps outputs 
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(steps) }}
+        run: echo "$OUTPUT_CONTEXT"
+
+      - name: Dump 'needs' outputs
+        env:
+          OUTPUT_CONTEXT: ${{ toJson(needs) }}
+        run: echo "$OUTPUT_CONTEXT"

@@ -48,7 +48,13 @@ jobs:
       - name: Install workloads (Not Linux)
         if: runner.os == 'Linux'
         run: dotnet workload install maui-android
-      
+        
+      - name: Install Android SDK
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y android-sdk
+          sudo ln -s /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
+          sdkmanager --install "build-tools;21.1.2" "platforms;android-21"       
+        
       - name: Restore Packages
         run: dotnet restore
         

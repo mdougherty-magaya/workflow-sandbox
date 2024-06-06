@@ -4,9 +4,9 @@ on:
     types: [published, created]
     branches:
       - 'main'
-  push:
-    branches:
-      - 'develop*'
+#  push:
+#    branches:
+#      - 'develop*'
 #  pull_request:
 #    types:
 #      - opened
@@ -22,6 +22,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          fetch-tags: true
 
       - name: Show condition values
         env:
@@ -36,6 +38,22 @@ jobs:
         env:
           EVENT_NUMBER: ${{ github.event.number }}
         run: env
+        
+      - name: Git commands
+        run: |
+          ls -la
+          git --version
+          git fetch --tags
+          git log --format=oneline
+          git show-ref --tags
+          git tag -l
+          git tag -l --points-at ${{ github.sha }}
+          SHA_TAG=$(git tag -l --points-at ${{ github.sha }})
+          git tag -l --points-at b9cb031909a15fa697d68b5d671e6ec15fa01d34
+          git tag -l --points-at 5048a0f245a03bfa49631ebe38ded00fef86e9bc
+          LAST_VERSION=$(git tag -l | sort -u | tail -1)
+          echo "SHA_TAG=$SHA_TAG"
+          echo "LAST_VERSION=$LAST_VERSION"
 
   dump_contexts_to_log:
     strategy:
