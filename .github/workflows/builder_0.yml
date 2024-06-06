@@ -53,6 +53,8 @@ jobs:
       
       - name: Show build number
         run: |
+          echo packageVersion: ${{ needs.get-package-version.outputs.packageVersion }}
+          echo PACKAGE_VERSION: $PACKAGE_VERSION
           echo build_number: ${{ needs.get-build-number.outputs.build_number }}
           echo BUILD_NUMBER: $BUILD_NUMBER
 
