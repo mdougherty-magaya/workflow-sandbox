@@ -11,8 +11,12 @@ jobs:
   builder:
     name: Build application's Variant-0 
     needs:
+      - get-package-version
       - get-build-number
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_VERSION: ${{ needs.get-package-version.outputs.packageVersion }}
+      BUILD_NUMBER: ${{ needs.get-build-number.outputs.build_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -49,17 +53,9 @@ jobs:
       
       - name: Show build number
         run: |
-          echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
-          
-#          PATH=/snap/bin:
-#          /home/runner/.local/bin:
-#          /opt/pipx_bin:/home/runner/.cargo/bin:
-#          /home/runner/.config/composer/vendor/bin:
-#          /usr/local/.ghcup/bin:
-#          /home/runner/.dotnet/tools:
-#          /usr/local/sbin:
-#          /usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
-#               find $ANDROID_NDK_LATEST_HOME -type f
+          echo build_number: ${{ needs.get-build-number.outputs.build_number }}
+          echo BUILD_NUMBER: $BUILD_NUMBER
+
       - name: Install Android SDK
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y android-sdk
