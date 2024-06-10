@@ -11,8 +11,12 @@ jobs:
   builder:
     name: Build application's Variant-1 
     needs:
+      - get-package-version
       - get-build-number
     runs-on: ubuntu-latest
+    env:
+      PACKAGE_VERSION: ${{ needs.get-package-version.outputs.packageVersion }}
+      BUILD_NUMBER: ${{ needs.get-build-number.outputs.build_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -49,7 +53,10 @@ jobs:
       
       - name: Show build number
         run: |
-          echo Build Number: ${{ needs.get-build-number.outputs.build_number }}
+          echo packageVersion: ${{ needs.get-package-version.outputs.packageVersion }}
+          echo PACKAGE_VERSION: $PACKAGE_VERSION
+          echo build_number: ${{ needs.get-build-number.outputs.build_number }}
+          echo BUILD_NUMBER: $BUILD_NUMBER
         
   get-build-number:
     name: Retrieve build number
