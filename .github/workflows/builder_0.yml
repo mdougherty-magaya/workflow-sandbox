@@ -69,6 +69,7 @@ jobs:
           echo VERSION_POSTFIX: $VERSION_POSTFIX
 
       - name: Install Android SDK
+        if: runner.os == 'Linux' || runner.os == 'ubuntu-latest'
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y android-sdk
           sudo ln -s /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
@@ -84,17 +85,7 @@ jobs:
 
   get-package-version:
     name: Retrieve package version 
-    runs-on: ubuntu-latest
-    outputs: 
-      packageVersion: ${{ steps.read-file.outputs.packageVersion }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-  
-      - name: Read base version from project file
-        id: read-file
-        run: |
-          PACKAGE_VERSION=$(grep "<PackageVersion>" ./workflow-sandbox/workflow-sandbox.csproj | sed "s@.*<PackageVersion>\(.*\)</PackageVersion>.*@\1@")
-          echo "PackageVersion: ${PACKAGE_VERSION}" 
-          echo "packageVersion=$PACKAGE_VERSION" >> "$GITHUB_OUTPUT"
-
+    uses: ./.github/workflows/build-number.yml
+    with:
+      project_file: "./workflow-sandbox/workflow-sandbox.csproj"
+      tag_name: "PackageVersion"
