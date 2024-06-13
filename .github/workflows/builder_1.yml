@@ -68,7 +68,7 @@ jobs:
 
   get-package-version:
     name: Retrieve package version 
-    uses: ./.github/workflows/build-number.yml
+    uses: ./.github/workflows/project-version.yml
     with:
       project_file: "./workflow-sandbox/workflow-sandbox.csproj"
       tag_name: "PackageVersion"
