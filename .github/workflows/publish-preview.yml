@@ -31,6 +31,10 @@ jobs:
       - name: What's my sed?
         run: |
           echo "sed: $(which sed)"
+      - name: What's my tr?
+        run: |
+          echo "tr: $(which tr)"
+          man tr
     
   build:
     name: Build
@@ -124,8 +128,10 @@ jobs:
           echo "Current versionName=$CURRENT_VERSION_NAME"
           echo "VersionCode=$VERSION_CODE"
           echo "VersionName=${PACKAGE_VERSION}$(echo $VERSION_POSTFIX | sed 's/\-/\\-/g')"
-          sed -E "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ${MANIFEST_FILE}
-          sed -E "s/$CURRENT_VERSION_NAME/${PACKAGE_VERSION}${VERSION_POSTFIX}/" ${MANIFEST_FILE}
+          cat ${MANIFEST_FILE} | tr "$CURRENT_VERSION_CODE" "$VERSION_CODE" > ${MANIFEST_FILE}.tmp
+          mv ${MANIFEST_FILE}.tmp ${MANIFEST_FILE}
+          cat ${MANIFEST_FILE} | tr "$CURRENT_VERSION_NAME" "${PACKAGE_VERSION}${VERSION_POSTFIX}" > ${MANIFEST_FILE}.tmp
+          mv ${MANIFEST_FILE}.tmp ${MANIFEST_FILE}
           echo "Updated AndroidManifest:"
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
         
