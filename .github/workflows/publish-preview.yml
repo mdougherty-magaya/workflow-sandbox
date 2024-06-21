@@ -17,7 +17,7 @@ jobs:
       - get-build-number
     runs-on: ubuntu-latest
     env:
-      PACKAGE_VERSION: ${{ needs.get-package-version.outputs.packageVersion }}
+      PACKAGE_VERSION: ${{ needs.get-package-version.outputs.version }}
       BUILD_NUMBER: ${{ needs.get-build-number.outputs.build_number }}
     steps:
       - name: Checkout repository
@@ -99,7 +99,7 @@ jobs:
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
         
       - name: Build
-        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
+        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore -p:WarningLevel=0
 
       - name: Upload ${{ env.PACKAGE_VERSION }}${{ env.VERSION_POSTFIX }} build Artifacts
         uses: actions/upload-artifact@v4
@@ -124,7 +124,7 @@ jobs:
       - get-package-version
     uses: ./.github/workflows/build-number.yml
     with:
-      prefix: "${{ needs.get-package-version.outputs.packageVersion }}/"
+      prefix: "${{ needs.get-package-version.outputs.version }}/"
 
   get-package-version:
     name: Retrieve package version
