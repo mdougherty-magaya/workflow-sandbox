@@ -21,9 +21,10 @@ jobs:
     steps:
     - name: What's my sed?
       run: |
-       echo "sed: $(which sed)"
-       echo "sed version: $(sed --version)"
-       echo "sed help: $(sed --help)"          
+        echo "sed: $(which sed)"
+        echo "sed version: $(sed --version)"
+        echo "sed help: $(man sed)"
+        find / -name sed 
     
   build:
     name: Build
