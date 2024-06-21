@@ -10,12 +10,27 @@ on:
   workflow_dispatch:
 
 jobs:
+  sed: 
+    name: Sed Info
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: What's my sed?
+      run: |
+       echo "sed: $(which sed)"
+       echo "sed version: $(sed --version)"
+       echo "sed help: $(sed --help)"          
+    
   build:
     name: Build
     needs:
       - get-package-version
       - get-build-number
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     env:
       PACKAGE_VERSION: ${{ needs.get-package-version.outputs.version }}
       BUILD_NUMBER: ${{ needs.get-build-number.outputs.build_number }}
