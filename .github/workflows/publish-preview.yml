@@ -10,8 +10,31 @@ on:
   workflow_dispatch:
 
 jobs:
+  sed: 
+    name: Sed Info
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: What's my sed?
+      run: |
+        echo "sed: $(which sed)"
+        echo "sed version: $(sed --version)"
+        echo "sed help: $(man sed)"
+        find / -name sed 
+    
   build:
-    runs-on: ubuntu-latest    
+    name: Build
+    needs:
+      - get-package-version
+      - get-build-number
+    runs-on: macos-latest
+    env:
+      PACKAGE_VERSION: ${{ needs.get-package-version.outputs.version }}
+      BUILD_NUMBER: ${{ needs.get-build-number.outputs.build_number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -70,10 +93,46 @@ jobs:
         env:
           EVENT_NUMBER: ${{ github.event.number }}        
         run: |
-          echo "VERSION_POSTFIX=-rc.${EVENT_NUMBER}.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "VERSION_POSTFIX=-rc.${EVENT_NUMBER}.${BUILD_NUMBER}" >> "$GITHUB_ENV"
 
+      - name: Tool locations
+        run: |
+          echo "xmllint: $(which xmllint)"
+          echo "xmlstarlet: $(which xmlstarlet)"
+          
+      - name: Set Version code
+        run: |
+          echo "VERSION_CODE=$(echo $PACKAGE_VERSION | sed 's/[^0-9]*//g')$BUILD_NUMBER" >> "$GITHUB_ENV"
+          
+      - name: Update AndroidManifest.xml
+        env:
+          EVENT_NUMBER: ${{ github.event.number }}
+        run: |
+          MANIFEST_FILE="./workflow-sandbox/Platforms/Android/AndroidManifest.xml"
+          echo "Current AndroidManifest:"
+          cat ${MANIFEST_FILE}
+          CURRENT_VERSION_CODE=$(grep 'versionCode=\".*\"' ${MANIFEST_FILE} | perl -pe 's/.*versionCode="(\d*)".*/$1/')
+          echo "Current versionCode=$CURRENT_VERSION_CODE"
+          CURRENT_VERSION_NAME=$(grep 'versionName=\".*\"' ${MANIFEST_FILE} | perl -pe 's/.*versionName="(\S*)".*/$1/')
+          echo "Current versionName=$CURRENT_VERSION_NAME"
+          echo "VersionCode=$VERSION_CODE"
+          echo "VersionName=${PACKAGE_VERSION}$(echo $VERSION_POSTFIX | sed 's/\-/\\-/g')"
+          sed -i "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ${MANIFEST_FILE}
+          sed -i "s/$CURRENT_VERSION_NAME/${PACKAGE_VERSION}${VERSION_POSTFIX}/" ${MANIFEST_FILE}
+          echo "Updated AndroidManifest:"
+          cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
+        
       - name: Build
-        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore
+        run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore -p:WarningLevel=0
+
+      - name: Upload ${{ env.PACKAGE_VERSION }}${{ env.VERSION_POSTFIX }} build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sandbox-App-${{ env.PACKAGE_VERSION }}${{ env.VERSION_POSTFIX }}
+          path: |
+            ./WMS.App/bin/**/*            
+            ./WMS.App/obj/**/*            
+          retention-days: 15
 
       - name: Deploy generated package to GitHub registry
         run: dotnet nuget push ./workflow-sandbox/bin/Release/workflow-sandbox*.nupkg --api-key ${{secrets.PUBLISH_TOKEN}} --skip-duplicate --no-symbols
@@ -82,3 +141,18 @@ jobs:
         env:
           EVENT_NUMBER: ${{ github.event.number }}
         run: env
+        
+  get-build-number:
+    name: Retrieve build number
+    needs:
+      - get-package-version
+    uses: ./.github/workflows/build-number.yml
+    with:
+      prefix: "${{ needs.get-package-version.outputs.version }}/"
+
+  get-package-version:
+    name: Retrieve package version
+    uses: ./.github/workflows/project-version.yml
+    with:
+      project_file: "./workflow-sandbox/workflow-sandbox.csproj"
+      tag_name: "PackageVersion"
