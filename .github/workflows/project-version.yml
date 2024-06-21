@@ -32,7 +32,7 @@ jobs:
       - name: Read base version from project file
         id: read-file
         run: |
-          VERSION=$(grep "<${{ inputs.tag_name }}>" .${{ inputs.project_file }} | sed "s@.*<${{ inputs.tag_name }}>\(.*\)</${{ inputs.tag_name }}>.*@\1@")
+          VERSION=$(grep "<${{ inputs.tag_name }}>" ${{ inputs.project_file }} | sed "s@.*<${{ inputs.tag_name }}>\(.*\)</${{ inputs.tag_name }}>.*@\1@")
           echo "::debug::Version: ${VERSION}"        
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
