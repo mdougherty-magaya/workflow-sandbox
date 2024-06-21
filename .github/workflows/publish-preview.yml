@@ -101,7 +101,7 @@ jobs:
           echo "VersionCode=$VERSION_CODE"
           echo "VersionName=${PACKAGE_VERSION}$(echo $VERSION_POSTFIX | sed 's/\-/\\-/g')"
           sed -i "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
-          sed -i "s/$CURRENT_VERSION_NAME/$PACKAGE_VERSION/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
+          sed -i "s/$CURRENT_VERSION_NAME/${PACKAGE_VERSION}${VERSION_POSTFIX}/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
           echo "Updated AndroidManifest:"
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
         
