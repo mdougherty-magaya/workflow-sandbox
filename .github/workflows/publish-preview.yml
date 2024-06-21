@@ -86,7 +86,7 @@ jobs:
           
       - name: Set Version code
         run: |
-          echo "VERSION_CODE=$(echo $BASE_VERSION | sed 's/[^0-9]*//g')$BUILD_NUMBER" >> "$GITHUB_ENV"
+          echo "VERSION_CODE=$(echo $PACKAGE_VERSION | sed 's/[^0-9]*//g')$BUILD_NUMBER" >> "$GITHUB_ENV"
           
       - name: Update AndroidManifest.xml
         env:
@@ -95,7 +95,7 @@ jobs:
           REPLACE_VC=$(grep 'versionCode=\".*\"' ./workflow-sandbox/Platforms/Android/AndroidManifest.xml | sed 's@.*versionCode="\(.*\)".*@\1@')
           REPLACE_VN=$(grep 'versionName=\".*\"' ./workflow-sandbox/Platforms/Android/AndroidManifest.xml | sed 's@.*versionName="\(.*\)".*@\1@')
           sed -i "s/$REPLACE_VC/$(echo $VERSION_CODE)/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
-          sed -i "s/$REPLACE_VN/$(echo $PACKAGE_VERSION$VERSION_POSTFIX | sed 's/[^0-9]*//g')/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
+          sed -i "s/$REPLACE_VN/$(echo $PACKAGE_VERSION$VERSION_POSTFIX/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
         
       - name: Build
