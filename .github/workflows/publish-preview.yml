@@ -94,18 +94,16 @@ jobs:
         run: |
           echo "Current AndroidManifest:"
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
-          echo ""
           CURRENT_VERSION_CODE=$(grep 'versionCode=\".*\"' ./workflow-sandbox/Platforms/Android/AndroidManifest.xml | sed 's@.*versionCode="\(.*\)".*@\1@')
           echo "Current versionCode=$CURRENT_VERSION_CODE"
           CURRENT_VERSION_NAME=$(grep 'versionName=\".*\"' ./workflow-sandbox/Platforms/Android/AndroidManifest.xml | sed 's@.*versionName="\(.*\)".*@\1@')
           echo "Current versionName=$CURRENT_VERSION_NAME"
           echo "VersionCode=$VERSION_CODE"
           echo "VersionName=${PACKAGE_VERSION}$(echo $VERSION_POSTFIX | sed 's/\-/\\-/g')"
-          sed -i "s/$CURRENT_VERSION_CODE/$(echo $VERSION_CODE)/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
-          sed -i "s/$CURRENT_VERSION_NAME/$(echo ${PACKAGE_VERSION}/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
+          sed -i "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
+          sed -i "s/$CURRENT_VERSION_NAME/$PACKAGE_VERSION/" ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
           echo "Updated AndroidManifest:"
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
-          echo ""
         
       - name: Build
         run: dotnet build workflow-sandbox/workflow-sandbox.csproj --configuration Release --no-restore -p:WarningLevel=0
