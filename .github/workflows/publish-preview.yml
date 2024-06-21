@@ -19,12 +19,18 @@ jobs:
           - macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-    - name: What's my sed?
-      run: |
-        echo "sed: $(which sed)"
-        echo "sed version: $(sed --version)"
-        echo "sed help: $(man sed)"
-        find / -name sed 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Dump runner context
+        env:
+          RUNNER_CONTEXT: ${{ toJson(runner) }}
+        run: echo "$RUNNER_CONTEXT"
+      
+      - name: What's my sed?
+        run: |
+          echo "sed: $(which sed)"
     
   build:
     name: Build
@@ -68,11 +74,12 @@ jobs:
         if: runner.os != 'Linux'
         run: dotnet workload install maui-android maui-ios
 
-      - name: Install workloads (Not Linux)
+      - name: Install workloads (Linux)
         if: runner.os == 'Linux'
         run: dotnet workload install maui-android
         
       - name: Install Android SDK
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get -qq update && sudo apt-get -qq install -y android-sdk
           sudo ln -s /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager /usr/local/bin/sdkmanager
@@ -117,8 +124,8 @@ jobs:
           echo "Current versionName=$CURRENT_VERSION_NAME"
           echo "VersionCode=$VERSION_CODE"
           echo "VersionName=${PACKAGE_VERSION}$(echo $VERSION_POSTFIX | sed 's/\-/\\-/g')"
-          sed -i "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ${MANIFEST_FILE}
-          sed -i "s/$CURRENT_VERSION_NAME/${PACKAGE_VERSION}${VERSION_POSTFIX}/" ${MANIFEST_FILE}
+          sed -E "s/$CURRENT_VERSION_CODE/$VERSION_CODE/" ${MANIFEST_FILE}
+          sed -E "s/$CURRENT_VERSION_NAME/${PACKAGE_VERSION}${VERSION_POSTFIX}/" ${MANIFEST_FILE}
           echo "Updated AndroidManifest:"
           cat ./workflow-sandbox/Platforms/Android/AndroidManifest.xml
         
