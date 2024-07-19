@@ -1,0 +1,38 @@
+name: Retrieve version number
+run-name: Retrieve version number
+  
+on:
+  workflow_call:
+    inputs:
+      project_file:
+        description: ""
+        required: true
+        default: ""
+        type: string
+      tag_name:
+        description: ""
+        required: true
+        default: ""
+        type: string
+    outputs:
+      version:
+        description: ""
+        value: ${{ jobs.main.outputs.version }}
+
+jobs:
+  main:
+    name: Main
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.read-file.outputs.version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read base version from project file
+        id: read-file
+        run: |
+          VERSION=$(grep "<${{ inputs.tag_name }}>" ${{ inputs.project_file }} | sed "s@.*<${{ inputs.tag_name }}>\(.*\)</${{ inputs.tag_name }}>.*@\1@")
+          echo "::debug::Version: ${VERSION}"        
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
