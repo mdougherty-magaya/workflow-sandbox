@@ -10,13 +10,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  sed: 
-    name: Sed Info
+  info: 
+    name: Debug and Analytics
     strategy:
       matrix:
         os:
           - ubuntu-latest
+          - ubuntu-20.04
           - macos-latest
+          - macos-latest-large
+          - macos-13
     runs-on: ${{ matrix.os }}
     steps:
       - name: Dump GitHub context
@@ -27,6 +30,9 @@ jobs:
         env:
           RUNNER_CONTEXT: ${{ toJson(runner) }}
         run: echo "$RUNNER_CONTEXT"
+      - name: Runner system information
+        run: |
+          uname -a
       
       - name: What's my sed?
         run: |
